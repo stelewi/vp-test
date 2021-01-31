@@ -20,7 +20,7 @@ class Path
         $this->pathData = $pathData;
     }
 
-    public function __toString() : string
+    public function asString() : string
     {
         return implode('', $this->pathData);
     }
