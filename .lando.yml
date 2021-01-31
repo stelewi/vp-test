@@ -1,0 +1,4 @@
+name: vp-test
+recipe: lamp
+config:
+  webroot: public
