@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Data\Exception;
+namespace App\Map\Exception;
 
 
 class UnexpectedMapDataException extends \Exception

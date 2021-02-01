@@ -15,7 +15,7 @@ class Path
      * Path constructor.
      * @param Move[] $pathData
      */
-    public function __construct(array $pathData)
+    private function __construct(array $pathData)
     {
         $this->pathData = $pathData;
     }
@@ -23,5 +23,10 @@ class Path
     public function asString() : string
     {
         return implode('', $this->pathData);
+    }
+
+    public static function create(array $pathData) : self
+    {
+        return new self($pathData);
     }
 }

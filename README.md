@@ -22,3 +22,11 @@ Environment variables are supplied in a base `.env` file but can be overridden.
 From the project root, simply run:
 
 `php bin/discover-path.php`
+
+## Tests
+
+To run the suite of `phpspec` tests:
+
+From the project root, simply run:
+
+`php vendor/phpspec/phpspec/bin/phpspec run`

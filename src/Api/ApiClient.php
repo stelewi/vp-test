@@ -7,8 +7,6 @@ namespace App\Api;
 use App\Api\Data\ApiResponse;
 use App\Api\Exception\ApiClientException;
 use App\Data\Coordinates;
-use App\Data\Exception\UnexpectedMapDataException;
-use App\Data\Map;
 use App\Data\Path;
 use App\Map\MapReaderInterface;
 use GuzzleHttp\ClientInterface;
@@ -45,15 +43,16 @@ class ApiClient implements ApiClientInterface
      * @param string $senderName
      * @return ApiResponse
      * @throws ApiClientException
-     * @throws GuzzleException
      */
     public function sendDroid(Path $path, string $senderName): ApiResponse
     {
+
         $response = $this->httpClient->request('GET', $this->endpoint, [
             'query' => [
                 'name' => $senderName,
                 'path' => $path->asString()
-            ]
+            ],
+            'http_errors' => false
         ]);
 
         if(!isset(self::$statusCodeToDroidStateMap[$response->getStatusCode()]))
@@ -63,6 +62,11 @@ class ApiClient implements ApiClientInterface
 
         $droidState = self::$statusCodeToDroidStateMap[$response->getStatusCode()];
         $responseData = json_decode($response->getBody(), true);
+
+        if($responseData === null)
+        {
+            throw new ApiClientException('Could not decode response: ' . $responseData);
+        }
 
         if(!isset($responseData['message']))
         {
@@ -76,19 +80,27 @@ class ApiClient implements ApiClientInterface
             throw new ApiClientException('No map available in response data');
         }
 
-        $crashPosition = null;
-
-        if($droidState === ApiResponse::DROID_STATE_CRASHED &&
-            preg_match('/Crashed at position ([0-9]+),([0-9]+)/', $message, $matches) === 1)
-        {
-            $crashPosition = Coordinates::create((int) $matches[1], (int) $matches[2]);
-        }
-
         return new ApiResponse(
             $message,
             $this->mapReader->readMapString($responseData['map']),
             $droidState,
-            $crashPosition
+            $this->getDroidCrashPosition($droidState, $message)
         );
+    }
+
+    /**
+     * @param int $droidState
+     * @param string $message
+     * @return Coordinates|null
+     */
+    private function getDroidCrashPosition(int $droidState, string $message) : ?Coordinates
+    {
+        if($droidState === ApiResponse::DROID_STATE_CRASHED &&
+            preg_match('/Crashed at position ([0-9]+),([0-9]+)/', $message, $matches) === 1)
+        {
+            return Coordinates::create((int) $matches[1], (int) $matches[2]);
+        }
+
+        return null;
     }
 }

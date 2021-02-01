@@ -4,11 +4,16 @@
 namespace App\Map;
 
 
-use App\Data\Exception\UnexpectedMapDataException;
+use App\Map\Exception\UnexpectedMapDataException;
 use App\Data\Map;
 
 class MapReader implements MapReaderInterface
 {
+    /**
+     * @param string $mapString
+     * @return Map
+     * @throws UnexpectedMapDataException
+     */
     public function readMapString(string $mapString): Map
     {
         $rows = preg_split("/\\r\\n|\\r|\\n/", $mapString);
@@ -31,7 +36,7 @@ class MapReader implements MapReaderInterface
 
             foreach ($squares as $colIdx => $square)
             {
-                if(!in_array($square, [self::MAP_SQUARE_DROID_PATH, self::MAP_SQUARE_OBSTACLE, self::MAP_SQUARE_START_POS]))
+                if(!in_array($square, [Map::MAP_SQUARE_DROID_PATH, Map::MAP_SQUARE_OBSTACLE, Map::MAP_SQUARE_START_POS, Map::MAP_SQUARE_EMPTY]))
                 {
                     throw new UnexpectedMapDataException("Unexpected character in map data: [$square] " .
                         ".\nMap data: $mapString"
