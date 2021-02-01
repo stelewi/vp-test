@@ -11,9 +11,12 @@ use App\Data\Path;
 use App\Map\MapReaderInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 
 class ApiClient implements ApiClientInterface
 {
+    use LoggerAwareTrait;
 
     private string $endpoint;
     private ClientInterface $httpClient;
@@ -36,6 +39,7 @@ class ApiClient implements ApiClientInterface
         $this->endpoint = $endpoint;
         $this->httpClient = $httpClient;
         $this->mapReader = $mapReader;
+        $this->setLogger(new NullLogger());
     }
 
     /**
@@ -46,6 +50,7 @@ class ApiClient implements ApiClientInterface
      */
     public function sendDroid(Path $path, string $senderName): ApiResponse
     {
+        $this->logger->info("Sending droid on path: ". $path->asString());
 
         $response = $this->httpClient->request('GET', $this->endpoint, [
             'query' => [

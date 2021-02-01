@@ -25,6 +25,8 @@ From the project root, simply run:
 
 ## Tests
 
+Tests can be found under the `spec` directory. I tried to write a test for anything that contains any non-trivial logic.
+
 To run the suite of `phpspec` tests:
 
 From the project root, simply run:
