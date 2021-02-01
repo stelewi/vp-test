@@ -34,13 +34,18 @@ class Map
         return count($this->mapData);
     }
 
-    public function getSquare(int $row, int $col) : ?string
+    public function getSquare(Coordinates $coordinates) : ?string
     {
-        if($row >= $this->getRows() || $col > 8)
+        $x = $coordinates->getX();
+        $y = $coordinates->getY();
+
+        if($x >= $this->getRows() || $y > 8)
         {
             return null;
         }
 
-        return $this->mapData[$row][$col];
+        return $this->mapData[$x][$y];
     }
+
+
 }

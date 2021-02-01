@@ -16,7 +16,7 @@ class Move
      * Move constructor.
      * @param string $direction
      */
-    public function __construct(string $direction)
+    private function __construct(string $direction)
     {
         $this->direction = $direction;
     }
@@ -34,6 +34,21 @@ class Move
     public static function right() : self
     {
         return new self(self::RIGHT);
+    }
+
+    public function getOffset(): Coordinates
+    {
+        switch ($this->direction)
+        {
+            case self::FORWARD:
+                return Coordinates::create(1,0);
+
+            case self::LEFT:
+                return Coordinates::create(0,-1);
+
+            case self::RIGHT:
+                return Coordinates::create(0,1);
+        }
     }
 
     public function __toString() : string

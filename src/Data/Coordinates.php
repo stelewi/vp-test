@@ -36,6 +36,17 @@ class Coordinates
         return $this->y;
     }
 
+    public function move(Move $move) : self
+    {
+        $offset = $move->getOffset();
+
+        return self::create(
+            $this->x + $offset->getX(),
+            $this->y + $offset->getY()
+        );
+    }
+
+
     public static function create(int $x, int $y): self
     {
         return new self($x, $y);
