@@ -6,7 +6,8 @@ use App\Api\ApiClient;
 use App\Api\Data\ApiResponse;
 use App\Data\Coordinates;
 use App\Data\Map;
-use App\Map\ReaderInterface;
+use App\Data\Move;
+use App\Map\MapReaderInterface;
 use GuzzleHttp\ClientInterface;
 use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\ResponseInterface;
@@ -18,7 +19,7 @@ class ApiClientSpec extends ObjectBehavior
         $this->shouldHaveType(ApiClient::class);
     }
 
-    function let(ClientInterface $httpClient, ReaderInterface $mapReader)
+    function let(ClientInterface $httpClient, MapReaderInterface $mapReader)
     {
         $this->beConstructedWith(
             'https://deathstar.dev-tests.vp-ops.com/alliance.php',
@@ -30,7 +31,7 @@ class ApiClientSpec extends ObjectBehavior
     function it_sends_a_droid_on_a_path_resulting_in_a_crash(
         ClientInterface $httpClient,
         ResponseInterface $httpResponse,
-        ReaderInterface $mapReader,
+        MapReaderInterface $mapReader,
         Map $map)
     {
         $path = new Path([Move::forward(), Move::left(), Move::forward(), Move::right()]);

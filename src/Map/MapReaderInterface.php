@@ -6,7 +6,7 @@ namespace App\Map;
 
 use App\Data\Map;
 
-interface ReaderInterface
+interface MapReaderInterface
 {
     public function readMapString(string $mapString) : Map;
 

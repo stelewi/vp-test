@@ -1,4 +1,5 @@
 name: vp-test
 recipe: lamp
 config:
+  php: '7.4'
   webroot: public

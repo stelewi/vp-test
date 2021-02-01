@@ -10,7 +10,7 @@ use App\Data\Coordinates;
 use App\Data\Exception\UnexpectedMapDataException;
 use App\Data\Map;
 use App\Data\Path;
-use App\Map\ReaderInterface;
+use App\Map\MapReaderInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -19,7 +19,7 @@ class ApiClient implements ApiClientInterface
 
     private string $endpoint;
     private ClientInterface $httpClient;
-    private ReaderInterface $mapReader;
+    private MapReaderInterface $mapReader;
 
     private static array $statusCodeToDroidStateMap = [
         417 => ApiResponse::DROID_STATE_CRASHED,
@@ -31,9 +31,9 @@ class ApiClient implements ApiClientInterface
      * ApiClient constructor.
      * @param string $endpoint
      * @param ClientInterface $httpClient
-     * @param ReaderInterface $mapReader
+     * @param MapReaderInterface $mapReader
      */
-    public function __construct(string $endpoint, ClientInterface $httpClient, ReaderInterface $mapReader)
+    public function __construct(string $endpoint, ClientInterface $httpClient, MapReaderInterface $mapReader)
     {
         $this->endpoint = $endpoint;
         $this->httpClient = $httpClient;
@@ -46,7 +46,6 @@ class ApiClient implements ApiClientInterface
      * @return ApiResponse
      * @throws ApiClientException
      * @throws GuzzleException
-     * @throws UnexpectedMapDataException
      */
     public function sendDroid(Path $path, string $senderName): ApiResponse
     {

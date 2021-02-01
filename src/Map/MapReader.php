@@ -7,7 +7,7 @@ namespace App\Map;
 use App\Data\Exception\UnexpectedMapDataException;
 use App\Data\Map;
 
-class Reader implements ReaderInterface
+class MapReader implements MapReaderInterface
 {
     public function readMapString(string $mapString): Map
     {

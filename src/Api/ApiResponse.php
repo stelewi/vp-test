@@ -79,8 +79,4 @@ class ApiResponse
     {
         return $this->crashPosition;
     }
-
-
-
-
 }
