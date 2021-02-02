@@ -6,12 +6,13 @@ namespace App\PathFinder;
 
 use App\Api\ApiClientInterface;
 use App\Api\Data\ApiResponse;
+use App\Data\Move;
 use App\Data\Path;
 use App\PathFinder\Exception\PathFinderException;
 
 class PathFinder
 {
-    const MAX_DROID_SACRIFICES = 1000;
+    const MAX_DROID_SACRIFICES = 5000;
 
     private ApiClientInterface $apiClient;
 
@@ -32,7 +33,6 @@ class PathFinder
         $this->droidSenderName = $droidSenderName;
     }
 
-
     public function findPath(): Path
     {
         $droidFollowPath = $this->pathSuggester->initialSuggestion();
@@ -49,9 +49,15 @@ class PathFinder
                     return $this->pathSuggester->informedSuggestion($droidResponse->getMap());
 
                 case ApiResponse::DROID_STATE_GONE:
-                case ApiResponse::DROID_STATE_CRASHED:
-                    // drone either vanished or crashed; use our map to generate a potentially better path
+                    // make an informed choice of path based on map...
                     $droidFollowPath = $this->pathSuggester->informedSuggestion($droidResponse->getMap());
+                    // and forge further ahead if possible...
+                    $droidFollowPath = $droidFollowPath->addPath(Path::create(array_fill(0, 20, Move::forward())));
+                    break;
+
+                case ApiResponse::DROID_STATE_CRASHED:
+                    $droidFollowPath = $this->pathSuggester->informedSuggestion($droidResponse->getMap());
+                    break;
             }
         }
     }

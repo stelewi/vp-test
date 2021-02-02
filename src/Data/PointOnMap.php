@@ -37,7 +37,7 @@ class PointOnMap
     }
 
     /**
-     * return an updated
+     * return a new object, or null if invalid
      * @param Path $path
      * @return PointOnMap|null
      */

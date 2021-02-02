@@ -13,7 +13,7 @@ $dotenv->load();
 
 $apiClient = new ApiClient($_ENV['API_ENDPOINT'], new GuzzleHttp\Client(), new MapReader());
 
-$path = Path::create([Move::forward(), Move::left(), Move::forward(), Move::right()]);
+$path = Path::create(array_fill(0, 10, Move::forward()));
 
 $response = $apiClient->sendDroid($path, $_ENV['DEFAULT_DROID_SENDER_NAME']);
 
