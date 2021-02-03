@@ -33,6 +33,10 @@ class Map
     {
         return count($this->mapData);
     }
+    public function getRowAsString(int $row) : string
+    {
+        return implode('', $this->mapData[$row]);
+    }
 
     public function getSquare(Coordinates $coordinates) : ?string
     {

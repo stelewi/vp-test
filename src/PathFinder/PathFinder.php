@@ -18,29 +18,35 @@ class PathFinder
 
     private PathSuggesterInterface $pathSuggester;
 
-    private string $droidSenderName;
-
     /**
      * PathFinder constructor.
      * @param ApiClientInterface $apiClient
      * @param PathSuggesterInterface $pathSuggester
-     * @param string $droidSenderName
      */
-    public function __construct(ApiClientInterface $apiClient, PathSuggesterInterface $pathSuggester, string $droidSenderName)
+    public function __construct(ApiClientInterface $apiClient, PathSuggesterInterface $pathSuggester)
     {
         $this->apiClient = $apiClient;
         $this->pathSuggester = $pathSuggester;
-        $this->droidSenderName = $droidSenderName;
     }
 
-    public function findPath(): Path
+    /**
+     * @param string $droidSenderName
+     * @param ProgressTracker|null $tracker
+     * @return Path
+     */
+    public function findPath(string $droidSenderName, ProgressTracker $tracker = null): Path
     {
         $droidFollowPath = $this->pathSuggester->initialSuggestion();
         $droidNumber = 0;
 
         while($droidNumber++ < self::MAX_DROID_SACRIFICES)
         {
-            $droidResponse = $this->apiClient->sendDroid($droidFollowPath, $this->droidSenderName);
+            $droidResponse = $this->apiClient->sendDroid($droidFollowPath, $droidSenderName);
+
+            if($tracker !== null)
+            {
+                $tracker->updateProgress($droidResponse);
+            }
 
             switch ($droidResponse->getDroidState())
             {

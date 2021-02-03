@@ -9,6 +9,7 @@ use App\Data\Path;
 use App\PathFinder\PathFinder;
 use App\PathFinder\PathSuggesterInterface;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 
 class PathFinderSpec extends ObjectBehavior
 {
@@ -29,6 +30,7 @@ class PathFinderSpec extends ObjectBehavior
         ApiResponse $apiResponseA,
         Map $mapResponseA,
         Path $pathB,
+        Path $pathBExtended,
         ApiResponse $apiResponseB,
         Map $mapResponseB,
         Path $pathC,
@@ -44,8 +46,11 @@ class PathFinderSpec extends ObjectBehavior
         $apiResponseA->getDroidState()->willReturn(ApiResponse::DROID_STATE_GONE);
 
         // use map acquired from original droid to send the next droid
+        // also extend any suggested path from the map forward so the droid can forge
+        // ahead (as it didnt crash previously)
         $pathSuggester->informedSuggestion($mapResponseA)->willReturn($pathB);
-        $apiClient->sendDroid($pathB, 'Chewbacca')->willReturn($apiResponseB);
+        $pathB->addPath(Argument::type(Path::class))->willReturn($pathBExtended);
+        $apiClient->sendDroid($pathBExtended, 'Chewbacca')->willReturn($apiResponseB);
         $apiResponseB->getMap()->willReturn($mapResponseB);
         $apiResponseB->getDroidState()->willReturn(ApiResponse::DROID_STATE_CRASHED);
 
@@ -57,6 +62,6 @@ class PathFinderSpec extends ObjectBehavior
 
         $pathSuggester->informedSuggestion($mapResponseC)->willReturn($optimalPath);
 
-        $this->findPath()->shouldBe($optimalPath);
+        $this->findPath('Chewbacca')->shouldBe($optimalPath);
     }
 }
